@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include "../lib/lib.h"
 
+Primitive* func_us_801B7D10(Primitive* prim, u16 arg1, s16 posX, s16 posY);
+
 typedef struct {
     /* 0x0 */ u16 category;
     /* 0x2 */ u16 itemId;
@@ -20,8 +22,43 @@ typedef enum {
     INVENTORY_DOCUMENT,
 } InventoryCategory;
 
+static u16 D_us_80180E90[] = {
+    0x0A9, 0x046, 0x180, 0x06E, 0x040, 0x0AF, 0x04B, 0x01B, 0x051, 0x069, 0x01D,
+    0x0F6, 0x0B2, 0x00D, 0x09D, 0x0C1, 0x00B, 0x0FE, 0x09C, 0x0F3, 0x031, 0x010,
+    0x12F, 0x028, 0x066, 0x07C, 0x061, 0x130, 0x055, 0x006, 0x0E9, 0x06C, 0x05D,
+    0x126, 0x053, 0x0FD, 0x043, 0x080, 0x0F7, 0x016, 0x0B7, 0x009, 0x058, 0x06A,
+    0x022, 0x0B4, 0x092, 0x06B, 0x063, 0x105, 0x0FB, 0x044, 0x030, 0x073, 0x072,
+    0x081, 0x09E, 0x11F, 0x076, 0x0E4, 0x014, 0x0E3, 0x0D6, 0x088, 0x029, 0x042,
+    0x0D3, 0x12C, 0x07A, 0x03D, 0x0CE, 0x06F, 0x0EF, 0x0CB, 0x0E1, 0x085, 0x02D,
+    0x0DD, 0x083, 0x115, 0x10F, 0x017, 0x0BC, 0x0BA, 0x0BE, 0x041, 0x04D, 0x118,
+    0x047, 0x16B, 0x0A1, 0x032, 0x15E, 0x071, 0x156, 0x142, 0x106, 0x143, 0x108,
+    0x127, 0x078, 0x11D, 0x0A5, 0x00E, 0x074, 0x0B6, 0x131, 0x185, 0x08D, 0x07E,
+    0x025, 0x02B, 0x090, 0x182, 0x111, 0x0C3, 0x094, 0x08A, 0x0A7, 0x0D8, 0x097,
+    0x026, 0x01F, 0x099, 0x04F, 0x0EC, 0x174, 0x172, 0x188, 0x10B, 0x16E, 0x11C,
+    0x14E, 0x148, 0x151, 0x144, 0x0E5, 0x0E0, 0x0D9, 0x190, 0x133, 0x068, 0x0C6,
+    0x18C, 0x164, 0x15F, 0x17B, 0xFFFF};
+
+extern u8* D_psp_092A54E0;
+extern const char** D_us_8018168C;
+extern u16 D_us_80181530[];
+extern u8 D_us_80181650[];
+extern u8 D_us_80181658[];
+extern const char** D_us_80181528;
+extern const char** D_psp_092A5F98;
+extern const char** D_us_801818C0;
+extern const char* D_us_801818EC[];
+extern const char* D_us_801818F0[];
+extern char D_us_8018180C[];
+extern u16 D_us_80181978[];
+extern RECT D_psp_092A4D48;
+extern const char** D_us_801818F4;
+extern char* D_us_80181660;
+extern char* D_us_80181668;
+extern char** D_us_80181674;
+extern const char* D_us_80180FB4[];
 extern s32 D_8C630D0;
 extern s32 D_psp_08C630DC;
+extern s32 E_ID(ID_25);
 extern s32 E_ID(ID_27);
 extern s32 E_ID(ID_28);
 extern s32 E_ID(ID_29);
@@ -36,8 +73,18 @@ extern u16 D_psp_092A4A78[];
 extern s16 D_psp_092A4A88[];
 extern u16 D_psp_092A4AA0[];
 extern s16 D_psp_092A49B8[];
-extern u8** D_psp_092A5F48;
-extern u8** D_psp_092A5F98;
+extern const char** D_psp_092A5F40;
+extern const char** D_psp_092A5F48;
+extern u8 D_us_801811FC[];
+extern u8 D_us_80181204[];
+extern u8 D_us_80181210[];
+extern u8 D_us_8018121C[];
+extern u8 D_us_80181234[];
+extern u8 D_us_80181244[];
+extern u8 D_us_801812C0[];
+extern u8 D_us_801812C8[];
+extern u8 D_us_801812D0[];
+extern u8* D_us_801812D8[];
 
 extern const char D_psp_092A4880[];
 extern u16 D_us_801814D4[];
@@ -269,17 +316,6 @@ void func_us_801AFE0C(Entity* self) {
         break;
     }
 }
-
-extern u8 D_us_801811FC[];
-extern u8 D_us_80181204[];
-extern u8 D_us_80181210[];
-extern u8 D_us_8018121C[];
-extern u8 D_us_80181234[];
-extern u8 D_us_80181244[];
-extern u8 D_us_801812C0[];
-extern u8 D_us_801812C8[];
-extern u8 D_us_801812D0[];
-extern u8* D_us_801812D8[];
 
 void EntityLibrarianChair(Entity* self) {
     Entity* newEnt;
@@ -1331,11 +1367,11 @@ Primitive* func_us_801B3EC8(Primitive* prim, u32 number, u16 maxDigits) {
     return prim;
 }
 
-Primitive* func_us_801B3FB4(Primitive* prim, char* str, u16 length, s32 arg3) {
+Primitive* func_us_801B3FB4(Primitive* prim, const char* str, u16 length, s32 arg3) {
     u8 ch;
     s32 i;
     u32 max;
-    char* chPtr;
+    const char* chPtr;
 
     chPtr = str;
     max = 0;
@@ -1365,24 +1401,6 @@ Primitive* func_us_801B3FB4(Primitive* prim, char* str, u16 length, s32 arg3) {
 #endif
     return prim;
 }
-
-#ifdef VERSION_PSP
-extern u8* D_us_80181660;
-extern char* D_us_80181668;
-extern char** D_us_80181674;
-#else
-static u8 D_us_80181660[] = {0xE8, 0xEA, 0xE8, 0xEA, 0x27, 0x2F, 0x2C, 0x24};
-static char D_us_80181668[] = {
-    // clang-format off
-    CH('S'), CH('T'), CH('R'), 
-    CH('C'), CH('O'), CH('N'), 
-    CH('I'), CH('N'), CH('T'), 
-    CH('L'), CH('C'), CH('K')
-    // clang-format on
-};
-static char* D_us_80181674[] = {
-    _S("Number"), _S("Equipped"), _S("Not equipped"), _S("うれるこすう")};
-#endif
 
 void func_us_801B4010(u16* arg0) {
     *arg0++ = g_Status.equipment[0];
@@ -1686,46 +1704,1084 @@ INCLUDE_ASM("st/lib_psp/psp/lib_psp/e_shop", func_us_801B4830);
 
 INCLUDE_ASM("st/lib_psp/psp/lib_psp/e_shop", func_psp_09264E08);
 
-INCLUDE_ASM("st/lib_psp/psp/lib_psp/e_shop", func_us_801B0C40);
+void* func_us_801B0C40(u8* pix, const char* str, s32 x, s32 y, s32 size) {
+    const u16 MINSCODE = 0x8140;
+    const u16 RIGHT_DOUBLE_QUOTATION_MARK = 0x8168;
 
-INCLUDE_ASM("st/lib_psp/psp/lib_psp/e_shop", func_us_801B4ED4);
+    const int FontWidth = 12;
+    const int FontHeight = 16;
+    const int FontStride = FontWidth / 2;
+
+    s32 letterWidth;
+    s32 i, j;
+    s32 pos;
+    s32 s_8;
+    s32 s_6;
+    u16 ch;
+    u8* ptr;
+    u8* chPix;
+    u8 sp3f;
+
+    s_6 = 0;
+    ptr = pix;
+    for (i = 0; i < (size * FontHeight) * 2; i++) {
+        *ptr++ = 0;
+    }
+    while (true) {
+        pos = 0;
+        while (*str >= 8) {
+            s_8 = 0;
+#ifdef VERSION_PSP
+            ch = g_api.func_ptr_91CF870((char*)str, &sp3f);
+#else
+            ch = *str;
+#endif
+            str++;
+            if (ch == '@') {
+                break;
+            }
+            if (ch >= 'a' && ch <= 'z') {
+                ch = ch + 0x8220;
+            } else if (ch >= 'A' && ch <= 'Z') {
+                ch = ch + 0x821F;
+            } else if (ch == ' ') {
+                ch = MINSCODE;
+                s_8 = 2;
+            } else {
+#ifdef VERSION_PSP
+                if (sp3f > 1) {
+                    str += sp3f - 1;
+                }
+            }
+            chPix = (u8*)g_api.func_ptr_91CF86C(ch, 1);
+#else
+                ch = *str++ | (ch << 8);
+                if (ch == MINSCODE) {
+                    s_8 = 2;
+                }
+            }
+            if (ch == RIGHT_DOUBLE_QUOTATION_MARK) {
+                str += 2;
+            }
+            chPix = (u8*)g_api.func_80106A28(ch, 1);
+#endif
+            while (true) {
+                if (ch == MINSCODE) {
+                    break;
+                }
+                for (i = 0; i < FontHeight; i++) {
+                    if (chPix[i * FontStride]) {
+                        break;
+                    }
+                }
+                if (i != 16) {
+                    break;
+                }
+                for (i = 0; i < FontHeight; i++) {
+                    ptr = &chPix[i * FontStride];
+                    for (j = 0; j < 5; j++) {
+                        *(ptr + 0) = *(ptr + 1);
+                        ptr += 1;
+                    }
+                    *ptr = 0;
+                }
+            }
+
+            for (i = 0, letterWidth = 0; i < FontHeight; i++) {
+                for (j = 0; j < FontStride; j++) {
+                    if (chPix[i * FontStride + j] && (letterWidth < j)) {
+                        letterWidth = j;
+                    }
+                }
+            }
+            for (i = 0; i < FontHeight; i++) {
+                if (chPix[letterWidth + i * FontStride] & 0xF0) {
+                    break;
+                }
+            }
+
+            if (i != 16) {
+                letterWidth++;
+            }
+            if (letterWidth < 6) {
+                letterWidth++;
+            }
+            for (i = 0; i < FontHeight; i++) {
+                ptr = &pix[pos + (i + (s_6 * FontHeight)) * size];
+                *ptr++ = *chPix++;
+                *ptr++ = *chPix++;
+                *ptr++ = *chPix++;
+                *ptr++ = *chPix++;
+                *ptr++ = *chPix++;
+                *ptr++ = *chPix++;
+            }
+            pos += letterWidth + s_8;
+            if (pos >= size - 5) {
+                break;
+            }
+        }
+        LoadTPage(
+            (u_long*)&pix[s_6 * FontHeight * size], 0, 0, x, y, size * 2, 0x10);
+        if (!*str) {
+            break;
+        }
+        s_6++;
+        y += 16;
+        if (*str < 8) {
+            str++;
+        }
+    }
+    return &pix[(size << 4) << 1];
+}
+
+void func_us_801B4ED4(s16 index, u16 arg1) {
+    const char* desc;
+    u16 itemId;
+    ShopItem* shopItem;
+    unsigned char* unused;
+
+    if (arg1) {
+        shopItem = &D_us_801814D8[index];
+    } else {
+        shopItem = &D_us_801D4364[index];
+    }
+    itemId = shopItem->itemId;
+    switch (shopItem->category) {
+    case INVENTORY_HAND:
+        desc = g_api.equipDefs[itemId].description;
+        g_api.LoadEquipIcon(g_api.equipDefs[itemId].icon,
+                            g_api.equipDefs[itemId].iconPalette, 0x1F);
+        break;
+    case INVENTORY_HEAD:
+    case INVENTORY_BODY:
+    case INVENTORY_CAPE:
+    case INVENTORY_ACCESSORY:
+        desc = g_api.accessoryDefs[itemId].description;
+        g_api.LoadEquipIcon(g_api.accessoryDefs[itemId].icon,
+                            g_api.accessoryDefs[itemId].iconPalette, 0x1F);
+        break;
+    case INVENTORY_RELIC:
+        itemId = D_us_801814D4[itemId];
+        desc = g_api.relicDefs[itemId].desc;
+        g_api.LoadEquipIcon(g_api.relicDefs[itemId].icon,
+                            g_api.relicDefs[itemId].iconPalette, 0x1F);
+        break;
+    case INVENTORY_DOCUMENT:
+        desc = D_us_8018168C[itemId];
+        if (itemId) {
+            itemId = 0x112;
+        } else {
+            itemId = 0x111;
+        }
+        g_api.LoadEquipIcon(itemId, 0x118, 0x1F);
+        break;
+    default:
+        desc = *D_us_80181528;
+        break;
+    }
+    unused = &g_Pix[0][0x1000];
+    itemId = 2;
+    func_us_801B0C40(&g_Pix[0][0x800], desc, 2, 0x184, 0x7E);
+}
 
 INCLUDE_ASM("st/lib_psp/psp/lib_psp/e_shop", func_us_801B5068);
 
-INCLUDE_ASM("st/lib_psp/psp/lib_psp/e_shop", func_us_801B0FBC);
+void func_us_801B0FBC(const char* str, u16 x, u16 y) {
+    RECT rect;
+    char ch;
 
-INCLUDE_ASM("st/lib_psp/psp/lib_psp/e_shop", func_us_801B1064);
+loop:
+    ch = *str++;
+    if (ch) {
+        if (ch == ' ') {
+            x++;
+            goto loop;
+#ifdef VERSION_PSP
+        } else if (ch == 0xCC) {
+            ch = 0xBB;
+#endif
+        }
+        rect.x = ((ch & 0xF) << 1) + 0x380;
+        rect.y = ((ch & 0xF0) >> 1) + 0xF0;
+        rect.w = 2;
+        rect.h = 8;
+        MoveImage(&rect, x, y);
+        x += 2;
+        goto loop;
+    }
+}
+
+Primitive* func_us_801B1064(
+    Primitive* prim, s16 x, s16 y, const char* str, u16 clut) {
+    u8 buffer[64];
+    u16 length;
+    s32 i;
+    u8 ch;
+    u8* chPtr;
+
+    chPtr = buffer;
+    length = 0;
+    for (i = 0; i < 64; i++) {
+        *chPtr++ = 0;
+    }
+    chPtr = buffer;
+    while (true) {
+        ch = *str++;
+        if (ch == 0xFF) {
+            ch = *str++;
+            if (ch == 0) {
+                break;
+            }
+        }
+        *chPtr++ = ch;
+        length++;
+#ifdef VERSION_PSP
+        ch = *str;
+        if (ch == 0xFF) {
+            str++;
+            ch = *str++;
+            if (ch == 0) {
+                break;
+            }
+            if (ch != 0xFF) {
+                *chPtr = ch;
+            } else {
+                str -= 2;
+            }
+        }
+        chPtr++;
+#endif
+    }
+    chPtr = buffer;
+    if (!length) {
+        return prim;
+    }
+    do {
+        ch = *chPtr++;
+#ifdef VERSION_PSP
+        if (ch) {
+            prim->clut = clut;
+            prim->u0 = (s8)((ch & 0xF) * 8);
+            prim->v0 = (s8)((ch & 0xF0) >> 1);
+            prim->drawMode = DRAW_DEFAULT;
+            prim->x0 = x;
+            prim->y0 = y;
+            prim = prim->next;
+        }
+        ch = *chPtr++;
+        if (ch) {
+            prim->clut = clut;
+            prim->u0 = (s8)((ch & 0xF) * 8);
+            prim->v0 = (s8)((ch & 0xF0) >> 1);
+            prim->drawMode = DRAW_DEFAULT;
+            prim->x0 = x;
+            prim->y0 = y - 8;
+            prim = prim->next;
+        }
+        if (ch >= 0xF0 && ch <= 0xFC) {
+            x += 12;
+        } else {
+            x += 8;
+        }
+#else
+        if (ch) {
+            prim->clut = clut;
+            prim->u0 = (s8)((ch & 0xF) * 8);
+            prim->v0 = (s8)((ch & 0xF0) >> 1);
+            prim->drawMode = DRAW_DEFAULT;
+            if (ch == CH('i') || ch == CH('l') || ch == CH('f') ||
+                ch == CH('I')) {
+                x--;
+            } else if (ch == CH('\'')) {
+                x -= 2;
+            }
+            prim->x0 = x;
+            prim->y0 = y;
+            prim = prim->next;
+            if (ch == CH('i') || ch == CH('l')) {
+                x += 7;
+            } else if (ch == CH('\'')) {
+                x += 6;
+            } else {
+                x += 8;
+            }
+        } else {
+            x += 4;
+        }
+#endif
+
+    } while (--length);
+
+    return prim;
+}
 
 INCLUDE_ASM("st/lib_psp/psp/lib_psp/e_shop", func_us_801B56E4);
 
-INCLUDE_ASM("st/lib_psp/psp/lib_psp/e_shop", func_us_801B5F18);
+void func_us_801B5F18(Entity* self) {
+    Entity* tempEntity = &g_Entities[192];
+    CreateEntityFromCurrentEntity(E_ID(ID_25), tempEntity);
+    self->step++;
+#ifdef VERSION_PSP
+    *D_psp_092A54E0 = 0;
+#else
+    D_us_80183F64 = 0;
+#endif
+    if (D_8003C730 == 2) {
+        D_8003C730 = 0;
+#ifdef VERSION_PSP
+        *D_psp_092A54E0 = 1;
+#else
+        D_us_80183F64 = 1;
+#endif
+    }
+}
 
-INCLUDE_ASM("st/lib_psp/psp/lib_psp/e_shop", func_us_801B5F84);
+void func_us_801B5F84(Entity* self) {
+    Entity* player = &PLAYER;
+    s16 posY;
 
-INCLUDE_ASM("st/lib_psp/psp/lib_psp/e_shop", func_us_801B60C8);
+    switch (self->step) {
+    case 0:
+        InitializeEntity(g_EInitCommon);
+        if (g_PlayableCharacter) {
+            self->step++;
+        } else if ((player->posY.i.hi + g_Tilemap.scrollY.i.hi) < 0x100 &&
+                   player->posX.i.hi > 0xC0) {
+            D_80097928 = 1;
+            D_80097910 = 0;
+        }
+        break;
+
+    case 1:
+        if (D_8003C730 != 2) {
+            self->hitboxWidth = 0x10;
+            self->hitboxHeight = 0x20;
+            if (player->posX.i.hi > 0xE0) {
+                posY = player->posY.i.hi + g_Tilemap.scrollY.i.hi;
+                if (posY >= 0x60 && posY < 0xA0) {
+                    func_us_801B5F18(self);
+                }
+            }
+        } else {
+            func_us_801B5F18(self);
+        }
+        break;
+
+    case 2:
+        break;
+    }
+}
+
+void func_us_801B60C8(Entity* self) {
+    switch (self->step) {
+    case 0:
+        InitializeEntity(g_EInitCommon);
+        break;
+
+    case 1:
+        GetPlayerCollisionWith(self, 8, 0x48, 1);
+        break;
+    }
+}
 
 INCLUDE_ASM("st/lib_psp/psp/lib_psp/e_shop", func_us_801B6124);
 
 INCLUDE_ASM("st/lib_psp/psp/lib_psp/e_shop", func_us_801B6324);
 
-INCLUDE_ASM("st/lib_psp/psp/lib_psp/e_shop", func_us_801B6E20);
+void func_us_801B6E20(Primitive* prim, Entity* arg1) {
+    s16 posX, posY;
+    u16 enemyIndex;
+    s32 i;
+    u16 enemyId;
+    u16 enemyMask;
+
+    enemyIndex = arg1->ext.et_801B6F30.unk82 * 2;
+    posY = 4;
+    for (i = 0; i < 14; i++) {
+        if ((i & 1) == 0) {
+#ifdef VERSION_PSP
+            posY += 12;
+            posX = 4;
+#else
+            posX = 0;
+            posY += 12;
+#endif
+        } else {
+            posX = 0x78;
+        }
+        enemyId = D_us_80180E90[enemyIndex];
+        if (enemyId != 0xFFFF) {
+            enemyMask = g_CastleFlags[(enemyIndex >> 3) + ENEMY_LIST_190];
+            if (enemyMask & (1 << (enemyIndex & 7))) {
+                prim = func_us_801B1064(
+                    prim, posX, posY, g_api.enemyDefs[enemyId].name, 0x196);
+            } else {
+                prim = func_us_801B1064(prim, posX, posY, D_us_8018180C, 0x191);
+            }
+        }
+        enemyIndex++;
+    }
+    while (prim != NULL) {
+        prim->drawMode = DRAW_HIDE;
+        prim = prim->next;
+    }
+}
 
 INCLUDE_ASM("st/lib_psp/psp/lib_psp/e_shop", func_us_801B6F30);
 
+const char* func_us_801B7C94(u16 itemId);
 INCLUDE_ASM("st/lib_psp/psp/lib_psp/e_shop", func_us_801B7C94);
 
+void func_us_801B7DF8(Primitive* prim, Entity* arg1, s16 enemyId);
 INCLUDE_ASM("st/lib_psp/psp/lib_psp/e_shop", func_us_801B7DF8);
 
 INCLUDE_ASM("st/lib_psp/psp/lib_psp/e_shop", func_psp_09269FF0);
 
 INCLUDE_ASM("st/lib_psp/psp/lib_psp/e_shop", func_us_801B7D10);
 
-INCLUDE_ASM("st/lib_psp/psp/lib_psp/e_shop", func_us_801B8234);
+void func_us_801B8234(Entity* self) {
+    Primitive* prim;
+    s32 primIndex;
+    s32 i;
+    s16 enemyIndex;
+    u16 enemyId;
+    u16 pads;
+    u8* pix;
+    const char* s3;
+    EnemyDef* enemyDef;
+    s32 pad[12];
+
+    enemyId = D_us_80180E90[self->params];
+    switch (self->step) {
+    case 0:
+#ifdef VERSION_PSP
+        primIndex = g_api.AllocPrimitives(PRIM_SPRT, 0xAE);
+#else
+        primIndex = g_api.AllocPrimitives(PRIM_SPRT, 0x86);
+#endif
+        if (primIndex != -1) {
+            InitializeEntity(g_EInitCommon);
+            i = 0;
+            self->flags |= FLAG_HAS_PRIMS;
+            self->primIndex = primIndex;
+            prim = &g_PrimBuf[primIndex];
+            for (; prim != NULL; i++) {
+                if (i < 6) {
+                    prim->type = PRIM_LINE_G2;
+                    prim->r0 = prim->r1 = 0x80;
+                    prim->g0 = prim->g1 = 0x80;
+                    prim->b0 = prim->b1 = 0x80;
+                    prim->priority = 0x1FA;
+                    prim->drawMode = DRAW_HIDE;
+                } else if (i < 8) {
+                    prim->type = PRIM_G4;
+                    prim->x0 = prim->x1 = prim->x2 = prim->x3 = 0x80;
+                    prim->y0 = prim->y1 = 0x1E;
+                    prim->y2 = prim->y3 = 0xDE;
+                    prim->priority = 0x1FA;
+                    prim->drawMode = DRAW_HIDE;
+#ifdef VERSION_PSP
+                } else if (i < 10) {
+                    prim->type = PRIM_GT4;
+                    prim->tpage = 0x110;
+                    prim->u0 = prim->u2 = (i - 9) * 0x78 + 0x80;
+                    prim->u1 = prim->u3 = prim->u0 + 0x78;
+                    prim->v0 = prim->v1 = 0x26;
+                    prim->v2 = prim->v3 = prim->v0 + 0xB0;
+                    prim->x0 = prim->x1 = prim->x2 = prim->x3 = 0x80;
+                    prim->y0 = prim->y1 = 0x26;
+                    prim->y2 = prim->y3 = 0xD6;
+                    prim->priority = 0x1FC;
+                    prim->drawMode = DRAW_HIDE;
+                } else if (i == 10) {
+                    prim->type = PRIM_GT4;
+                    prim->tpage = 0x2110;
+                    prim->u0 = prim->u2 = 0x20;
+                    prim->u1 = prim->u3 = prim->u0 + 0x5F;
+                    prim->v0 = prim->v1 = 0;
+                    prim->v2 = prim->v3 = prim->v0 + 0x6F;
+                    prim->x0 = prim->x2 = 0x1C;
+                    prim->x1 = prim->x3 = prim->x0 + (prim->u1 - prim->u0);
+                    prim->y0 = prim->y1 = 0x3C;
+                    prim->y2 = prim->y3 = prim->y0 + (prim->v2 - prim->v0);
+                    prim->priority = 0x11;
+                    prim->drawMode = DRAW_HIDE;
+                } else if (i == 11) {
+                    prim->tpage = 0x10;
+                    prim->clut = 0x1A1;
+                    prim->u0 = 0;
+                    prim->v0 = 0x80;
+                    prim->u1 = 0x80;
+                    prim->v1 = 0x40;
+                    prim->x0 = 0x84;
+                    prim->y0 = 0x38;
+                    prim->priority = 0x12;
+                    prim->drawMode = DRAW_HIDE;
+                } else if (i == 12) {
+                    prim->tpage = 0x10;
+                    prim->clut = 0x1A1;
+                    prim->u0 = 0;
+                    prim->v0 = 0xC0;
+                    prim->v1 = 0x20;
+                    prim->u1 = 0xF0;
+                    prim->x0 = 0xA;
+                    prim->y0 = 0xB4;
+                    prim->priority = 0x12;
+                    prim->drawMode = DRAW_HIDE;
+#else
+                } else if (i < 10) {
+                    prim->type = PRIM_GT4;
+                    prim->tpage = 0x114;
+                    prim->u0 = prim->u2 = (i - 9) * 0x70 + 0x80;
+                    prim->u1 = prim->u3 = prim->u0 + 0x70;
+                    prim->v0 = prim->v1 = 0x26;
+                    prim->v2 = prim->v3 = prim->v0 + 0xB0;
+                    prim->x0 = prim->x1 = prim->x2 = prim->x3 = 0x80;
+                    prim->y0 = prim->y1 = 0x26;
+                    prim->y2 = prim->y3 = 0xD6;
+                    prim->priority = 0x1FC;
+                    prim->drawMode = DRAW_HIDE;
+                } else if (i == 10) {
+                    prim->tpage = 0x110;
+                    prim->u0 = 0x20;
+                    prim->v0 = 0;
+                    prim->u1 = 0x60;
+                    prim->v1 = 0x70;
+                    prim->x0 = 0x18;
+                    prim->y0 = 0x3C;
+                    prim->priority = 0x11;
+                    prim->drawMode = DRAW_HIDE;
+                } else if (i == 11) {
+                    prim->tpage = 0x10;
+                    prim->clut = 0x1A1;
+                    prim->u0 = 0;
+                    prim->v0 = 0xC0;
+                    prim->v1 = 0x20;
+                    prim->u1 = 0xF0;
+                    prim->x0 = 0x18;
+                    prim->y0 = 0xB4;
+                    prim->priority = 0x12;
+                    prim->drawMode = DRAW_HIDE;
+#endif
+                } else {
+                    prim->clut = 0x196;
+                    prim->tpage = 0x1E;
+                    prim->u1 = prim->v1 = 8;
+                    prim->priority = 0x12;
+                    prim->drawMode = DRAW_HIDE;
+                }
+                prim = prim->next;
+            }
+        }
+        break;
+
+    case 1:
+        switch (self->step_s) {
+        case 0:
+            self->step_s++;
+            break;
+
+        case 1:
+            if (g_api.LoadMonsterLibrarianPreview(self->params)) {
+                self->step_s++;
+            }
+            break;
+
+        case 2:
+            if (!g_IsUsingCd) {
+                self->step_s++;
+            }
+            break;
+
+        case 3:
+            func_us_801B11A0(0, 0x180, 0x100, 0x60);
+            pix = g_Pix[0];
+#ifdef VERSION_PSP
+            for (i = 0; i < 4; i++) {
+                s3 = D_psp_092A5F98[i];
+            }
+            enemyDef = &g_api.enemyDefs[enemyId];
+            s3 = D_psp_092A5F48[self->params];
+            func_us_801B0C40(pix, s3, 0, 0x1C0, 0x6E);
+            s3 = D_psp_092A5F40[self->params];
+            func_us_801B0C40(pix, s3, 0, 0x1D0, 0x6E);
+#else
+            s3 = D_us_80180FB4[self->params];
+            func_us_801B0C40(pix, s3, 0, 0x1C0, 0x6E);
+#endif
+            self->step_s++;
+            break;
+
+        case 4:
+            prim = &g_PrimBuf[self->primIndex];
+            for (i = 0; i < 10; i++) {
+                prim = prim->next;
+            }
+            func_us_801B7DF8(prim, self, enemyId);
+            self->ext.et_801B6F30.unk7C = 0;
+            self->ext.et_801B6F30.unk7E = 0;
+            SetStep(2);
+        }
+        break;
+
+    case 2:
+        self->ext.et_801B6F30.unk7C++;
+        self->ext.et_801B6F30.unk7E += 0x40;
+        prim = &g_PrimBuf[self->primIndex];
+#ifdef VERSION_PSP
+        func_us_801B245C(prim, self->ext.et_801B6F30.unk7E,
+                         self->ext.et_801B6F30.unk7C * 2, 0x80, 0x20, 7, 0);
+#else
+        func_us_801B245C(prim, self->ext.et_801B6F30.unk7E,
+                         self->ext.et_801B6F30.unk7C * 2, 0x78, 0x20, 7, 0);
+#endif
+        if (self->ext.et_801B6F30.unk7C == 0x10) {
+            SetStep(3);
+        }
+        break;
+
+    case 3:
+        pads = g_pads[0].repeat;
+        if (pads & PAD_RIGHT) {
+#ifdef VERSION_PSP
+            for (enemyIndex = self->params + 1; enemyIndex < 0x94;
+                 enemyIndex++) {
+#else
+            for (enemyIndex = self->params + 1; enemyIndex < 0x92;
+                 enemyIndex++) {
+#endif
+                if (g_CastleFlags[(enemyIndex >> 3) + ENEMY_LIST_190] &
+                        (1 << (enemyIndex & 7)) &&
+                    D_us_80180E90[self->params] != 0xFFFF) {
+                    self->params = enemyIndex;
+                    SetStep(4);
+                    break;
+                }
+            }
+        } else if (pads & PAD_LEFT) {
+            for (enemyIndex = self->params - 1; enemyIndex >= 0; enemyIndex--) {
+                if (g_CastleFlags[(enemyIndex >> 3) + ENEMY_LIST_190] &
+                        (1 << (enemyIndex & 7)) &&
+                    D_us_80180E90[self->params] != 0xFFFF) {
+                    self->params = enemyIndex;
+                    SetStep(4);
+                    break;
+                }
+            }
+        }
+        pads = g_pads[0].tapped;
+#ifdef VERSION_PSP
+        if (pads & D_psp_08B42054) {
+#else
+        if (pads & PAD_TRIANGLE) {
+#endif
+            SetStep(7);
+        }
+        break;
+
+    case 4:
+        self->ext.et_801B6F30.unk7E = 0x400;
+        self->ext.et_801B6F30.unk7C = 0x10;
+        SetStep(5);
+        break;
+
+    case 5:
+        self->ext.et_801B6F30.unk7C--;
+        self->ext.et_801B6F30.unk7E -= 0x40;
+        prim = &g_PrimBuf[self->primIndex];
+#ifdef VERSION_PSP
+        func_us_801B245C(prim, self->ext.et_801B6F30.unk7E,
+                         self->ext.et_801B6F30.unk7C, 0x80, 0x20, 7, 0);
+#else
+        func_us_801B245C(prim, self->ext.et_801B6F30.unk7E,
+                         self->ext.et_801B6F30.unk7C, 0x74, 0x20, 7, 0);
+#endif
+        if (!self->ext.et_801B6F30.unk7C) {
+            SetStep(1);
+        }
+        break;
+
+    case 7:
+        if ((g_CutsceneFlags & 0x200) == 0) {
+            self->ext.et_801B6F30.unk7E = 0x400;
+            self->ext.et_801B6F30.unk7C = 0x10;
+            self->step++;
+        }
+        break;
+
+    case 8:
+        self->ext.et_801B6F30.unk7C--;
+        self->ext.et_801B6F30.unk7E -= 0x40;
+        prim = &g_PrimBuf[self->primIndex];
+#ifdef VERSION_PSP
+        func_us_801B245C(prim, self->ext.et_801B6F30.unk7E,
+                         self->ext.et_801B6F30.unk7C * 2, 0x80, 0x20, 7, 0);
+#else
+        func_us_801B245C(prim, self->ext.et_801B6F30.unk7E,
+                         self->ext.et_801B6F30.unk7C * 2, 0x74, 0x20, 7, 0);
+#endif
+        if (!self->ext.et_801B6F30.unk7C) {
+            g_CutsceneFlags |= 0x400;
+            DestroyEntity(self);
+        }
+        break;
+    }
+}
 
 INCLUDE_ASM("st/lib_psp/psp/lib_psp/e_shop", func_psp_0926ADD8);
 
 INCLUDE_ASM("st/lib_psp/psp/lib_psp/e_shop", func_psp_0926AED0);
 
-INCLUDE_ASM("st/lib_psp/psp/lib_psp/e_shop", func_us_801B8958);
+void func_us_801B8958(Primitive* prim, Entity* self) {
+    s16 posY;
+    s32 i, j;
 
-INCLUDE_ASM("st/lib_psp/psp/lib_psp/e_shop", func_us_801B8A00);
+    posY = 16;
+    j = self->ext.et_801B6F30.unk82;
+    for (i = 0; i < 7; i++, j++) {
+        prim = func_us_801B1064(prim, 16, posY, D_us_801818F4[j], 0x196);
+        posY += 12;
+    }
+    while (prim != NULL) {
+        prim->drawMode = DRAW_HIDE;
+        prim = prim->next;
+    }
+}
+
+void func_psp_0926BE68(Entity* self) {
+    DRAWENV drawEnv;
+    RECT clipRect;
+    DR_ENV* dr_env;
+    Primitive* prim;
+    s32 primIndex;
+    s32 i;
+    u16 pads;
+    s16 sfxIndex;
+
+    clipRect = D_psp_092A4D48;
+    switch (self->step) {
+    case 0:
+        primIndex = g_api.AllocPrimitives(PRIM_SPRT, 0x140);
+        if (primIndex != -1) {
+            InitializeEntity(g_EInitCommon);
+            i = 0;
+            self->flags |= FLAG_HAS_PRIMS;
+#ifdef VERSION_PSP
+            self->ext.et_801B6F30.unk86 = 0;
+#endif
+            self->primIndex = primIndex;
+            prim = &g_PrimBuf[primIndex];
+            for (; prim != NULL; i++) {
+                if (i < 6) {
+                    prim->type = PRIM_LINE_G2;
+                    prim->r0 = prim->r1 = 0x80;
+                    prim->g0 = prim->g1 = 0x80;
+                    prim->b0 = prim->b1 = 0x80;
+                    prim->priority = 0x1FA;
+                    prim->drawMode = DRAW_HIDE;
+                } else if (i < 8) {
+                    prim->type = PRIM_G4;
+                    prim->x0 = prim->x1 = prim->x2 = prim->x3 = 0x80;
+                    prim->y0 = prim->y1 = 0x16;
+                    prim->y2 = prim->y3 = 0x7A;
+                    prim->priority = 0x1FA;
+                    prim->drawMode = DRAW_HIDE;
+                } else if (i < 10) {
+                    prim->type = PRIM_GT4;
+#ifdef VERSION_PSP
+                    prim->tpage = 0x110;
+                    prim->u0 = prim->u2 = (i - 8) * 0x74 + 4;
+                    prim->u1 = prim->u3 = prim->u0 + 0x74;
+#else
+                    prim->tpage = 0x114;
+                    prim->u0 = prim->u2 = (i - 8) * 0x6C + 8;
+                    prim->u1 = prim->u3 = prim->u0 + 0x6C;
+#endif
+                    prim->v0 = prim->v1 = 0xE;
+                    prim->v2 = prim->v3 = 0x62;
+                    prim->x0 = prim->x1 = prim->x2 = prim->x3 = 0x80;
+                    prim->y0 = prim->y1 = 0x1E;
+                    prim->y2 = prim->y3 = 0x72;
+                    prim->priority = 0x1FC;
+                    prim->drawMode = DRAW_HIDE;
+                } else if (i == 10) {
+                    prim->type = PRIM_G4;
+                    prim->y0 = prim->y1 = 0x4B;
+                    prim->y2 = prim->y3 = 0x57;
+                    PRED(prim) = 0;
+                    PGRN(prim) = 0x20;
+                    PBLU(prim) = 0x40;
+                    prim->priority = 0x1FB;
+                    prim->drawMode = DRAW_HIDE;
+                } else if (i < 13) {
+                    prim->type = PRIM_GT4;
+                    prim->tpage = 0x1E;
+                    prim->clut = 0x17F;
+                    prim->u0 = prim->u2 = 0x58;
+                    prim->u1 = prim->u3 = 0x60;
+                    prim->v0 = prim->v1 = ((i - 0xB) * 8) + 0x70;
+                    prim->v2 = prim->v3 = 0x78 - ((i - 0xB) * 8);
+                    prim->x0 = prim->x2 = 0x7C;
+                    prim->x1 = prim->x3 = prim->x0 + 0x8;
+                    prim->y0 = prim->y1 = (i - 0xB) * 0x60 + 0x14;
+                    prim->y2 = prim->y3 = prim->y0 + 0x8;
+                    prim->priority = 0x1FC;
+                    prim->drawMode = DRAW_HIDE;
+                } else if (i == 13) {
+                    dr_env = g_api.func_800EDB08((POLY_GT4*)prim);
+                    if (dr_env != NULL) {
+                        prim->type = PRIM_ENV;
+                        prim->priority = 0x10;
+                        prim->drawMode = DRAW_DEFAULT;
+                        drawEnv = g_CurrentBuffer->draw;
+                        drawEnv.isbg = 1;
+                        drawEnv.clip = clipRect;
+#ifdef VERSION_PSP
+                        drawEnv.ofs[0] = 0;
+#else
+                        drawEnv.ofs[0] = 0x100;
+#endif
+                        drawEnv.ofs[1] = 0x100;
+                        SetDrawEnv(dr_env, &drawEnv);
+                    } else {
+                        self->step = 0;
+                        g_api.FreePrimitives(self->primIndex);
+                        self->flags &= ~FLAG_HAS_PRIMS;
+                        return;
+                    }
+                    prim = prim->next;
+                    dr_env = g_api.func_800EDB08((POLY_GT4*)prim);
+                    if (dr_env != NULL) {
+                        prim->type = PRIM_ENV;
+                        prim->priority = 0x13;
+                        prim->drawMode = DRAW_UNK_800;
+                    } else {
+                        self->step = 0;
+                        g_api.FreePrimitives(self->primIndex);
+                        self->flags &= ~FLAG_HAS_PRIMS;
+                        return;
+                    }
+                } else {
+                    prim->clut = 0x196;
+                    prim->tpage = 0x1E;
+                    prim->u1 = prim->v1 = 8;
+                    prim->priority = 0x11;
+                    prim->drawMode = DRAW_HIDE;
+                }
+                prim = prim->next;
+            }
+            self->ext.et_801B6F30.unk80 = 0;
+            self->ext.et_801B6F30.unk82 = 0;
+        }
+        break;
+
+    case 1:
+        if (g_CutsceneFlags & 0x400) {
+            SetStep(2);
+            self->ext.et_801B6F30.unk7C = 0;
+            self->ext.et_801B6F30.unk7E = 0;
+        }
+        break;
+
+    case 2:
+        self->ext.et_801B6F30.unk7C++;
+        self->ext.et_801B6F30.unk7E += 0x40;
+        prim = &g_PrimBuf[self->primIndex];
+#ifdef VERSION_PSP
+        func_us_801B245C(prim, self->ext.et_801B6F30.unk7E,
+                         self->ext.et_801B6F30.unk7C * 2, 0x78, 0x20, 7, 1);
+#else
+        func_us_801B245C(prim, self->ext.et_801B6F30.unk7E,
+                         self->ext.et_801B6F30.unk7C * 2, 0x74, 0x20, 7, 1);
+#endif
+        for (i = 0; i < 15; i++) {
+            prim = prim->next;
+        }
+        func_us_801B8958(prim, self);
+        if (self->ext.et_801B6F30.unk7C == 0x10) {
+            g_api.PlaySfx(SET_STOP_SEQ);
+            SetStep(3);
+        }
+        break;
+
+    case 3:
+        pads = g_pads[0].repeat;
+        if (pads & PAD_DOWN) {
+            if (self->ext.et_801B6F30.unk80 < 6) {
+                g_api.PlaySfx(SFX_UI_MOVE);
+                self->ext.et_801B6F30.unk80++;
+            } else if (self->ext.et_801B6F30.unk82 < 0x17) {
+                g_api.PlaySfx(SFX_UI_MOVE);
+                self->ext.et_801B6F30.unk82++;
+            }
+        } else if (pads & PAD_UP) {
+            if (self->ext.et_801B6F30.unk80 > 0) {
+                g_api.PlaySfx(SFX_UI_MOVE);
+                self->ext.et_801B6F30.unk80--;
+            } else if (self->ext.et_801B6F30.unk82) {
+                g_api.PlaySfx(SFX_UI_MOVE);
+                self->ext.et_801B6F30.unk82--;
+            }
+        }
+        if (pads & (PAD_R1 + PAD_R2)) {
+            if (self->ext.et_801B6F30.unk80 < 6) {
+                g_api.PlaySfx(SFX_UI_MOVE);
+                self->ext.et_801B6F30.unk80 = 6;
+            } else if (self->ext.et_801B6F30.unk82 < 0x17) {
+                g_api.PlaySfx(SFX_UI_MOVE);
+                self->ext.et_801B6F30.unk82 += 7;
+                if (self->ext.et_801B6F30.unk82 > 0x17) {
+                    self->ext.et_801B6F30.unk82 = 0x17;
+                }
+            }
+        } else if (pads & (PAD_L1 + PAD_L2)) {
+            if (self->ext.et_801B6F30.unk80 > 0) {
+                g_api.PlaySfx(SFX_UI_MOVE);
+                self->ext.et_801B6F30.unk80 = 0;
+            } else if (self->ext.et_801B6F30.unk82) {
+                g_api.PlaySfx(SFX_UI_MOVE);
+                if (self->ext.et_801B6F30.unk82 > 7) {
+                    self->ext.et_801B6F30.unk82 -= 7;
+                } else {
+                    self->ext.et_801B6F30.unk82 = 0;
+                }
+            }
+        }
+        pads = g_pads[0].tapped;
+#ifdef VERSION_PSP
+        if (pads & D_psp_08B42050) {
+#else
+        if (pads & PAD_CROSS) {
+#endif
+            g_api.PlaySfx(SFX_UI_CONFIRM);
+            SetStep(4);
+#ifdef VERSION_PSP
+        } else if (pads & D_psp_08B42054) {
+#else
+        } else if (pads & PAD_TRIANGLE) {
+#endif
+            SetStep(6);
+        }
+        prim = &g_PrimBuf[self->primIndex];
+        for (i = 0; i < 10; i++) {
+            prim = prim->next;
+        }
+        prim->x0 = prim->x2 = 0x11;
+        prim->x1 = prim->x3 = 0xEF;
+        prim->y0 = prim->y1 = self->ext.et_801B6F30.unk80 * 0xC + 0x1E;
+        prim->y2 = prim->y3 = prim->y0 + 0xC;
+        prim->drawMode = DRAW_COLORS;
+        prim = prim->next;
+        if (self->ext.et_801B6F30.unk82) {
+            prim->drawMode = DRAW_DEFAULT;
+        } else {
+            prim->drawMode = DRAW_HIDE;
+        }
+        prim = prim->next;
+        if (self->ext.et_801B6F30.unk82 < 0x17) {
+            prim->drawMode = DRAW_DEFAULT;
+        } else {
+            prim->drawMode = DRAW_HIDE;
+        }
+        prim = prim->next;
+        prim = prim->next;
+        prim = prim->next;
+        func_us_801B8958(prim, self);
+        break;
+
+    case 4:
+#ifndef VERSION_PSP
+        FntPrint("step_s %x\n", self->step_s);
+#endif
+        switch (self->step_s) {
+        case 0:
+            g_api.PlaySfx(SET_STOP_MUSIC);
+#ifdef VERSION_PSP
+            self->ext.et_801B6F30.unk86 = 1;
+#endif
+            self->animFrameDuration = 0x30;
+            self->step_s++;
+            break;
+
+        case 1:
+            if (!--self->animFrameDuration) {
+                self->step_s++;
+            }
+            break;
+
+        case 2:
+            if (!g_api.func_80131F68() && (g_CutsceneFlags & 0x200) == 0) {
+                sfxIndex =
+                    self->ext.et_801B6F30.unk80 + self->ext.et_801B6F30.unk82;
+                g_api.PlaySfx(D_us_80181978[sfxIndex]);
+                SetStep(3);
+            }
+            break;
+        }
+        break;
+
+    case 6:
+#ifdef VERSION_PSP
+        g_api.PlaySfx(SET_STOP_MUSIC);
+#else
+        if (g_api.func_80131F68()) {
+            g_api.PlaySfx(SET_STOP_MUSIC);
+        }
+#endif
+        self->step++;
+        break;
+
+    case 7:
+        if ((g_CutsceneFlags & 0x200) == 0) {
+            prim = &g_PrimBuf[self->primIndex];
+            for (i = 0; i < 10; i++) {
+                prim = prim->next;
+            }
+            prim->drawMode = DRAW_HIDE;
+            prim = prim->next;
+            prim->drawMode = DRAW_HIDE;
+            prim = prim->next;
+            prim->drawMode = DRAW_HIDE;
+            self->ext.et_801B6F30.unk7E = 0x400;
+            self->ext.et_801B6F30.unk7C = 0x10;
+            self->step++;
+            g_api.PlaySfx(0x202);
+            g_CutsceneFlags |= 0x200;
+        }
+        break;
+
+    case 8:
+        self->ext.et_801B6F30.unk7C--;
+        self->ext.et_801B6F30.unk7E -= 0x40;
+        prim = &g_PrimBuf[self->primIndex];
+#ifdef VERSION_PSP
+        func_us_801B245C(prim, self->ext.et_801B6F30.unk7E,
+                         self->ext.et_801B6F30.unk7C * 2, 0x78, 0x20, 7, 1);
+#else
+        func_us_801B245C(prim, self->ext.et_801B6F30.unk7E,
+                         self->ext.et_801B6F30.unk7C * 2, 0x74, 0x20, 7, 1);
+#endif
+        if (!self->ext.et_801B6F30.unk7C) {
+            prim = &g_PrimBuf[self->primIndex];
+            for (i = 0; i < 15; i++) {
+                prim = prim->next;
+            }
+            while (prim != NULL) {
+                prim->drawMode = DRAW_HIDE;
+                prim = prim->next;
+            }
+            SetStep(9);
+        }
+        break;
+
+    case 9:
+        g_CutsceneFlags &= ~0x400;
+#ifdef VERSION_PSP
+        if (self->ext.et_801B6F30.unk86) {
+            g_api.PlaySfx(0x302);
+        }
+#endif
+        DestroyEntity(self);
+        break;
+    }
+}

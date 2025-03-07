@@ -278,6 +278,7 @@ extern u16 D_psp_092A4A78[];
 extern s16 D_psp_092A4A88[];
 extern u16 D_psp_092A4AA0[];
 extern s16 D_psp_092A49B8[];
+extern u8** D_psp_092A5F40;
 extern u8** D_psp_092A5F48;
 extern u8** D_psp_092A5F98;
 #endif
@@ -855,7 +856,7 @@ extern u8* D_psp_092A54E0;
 extern u8 D_us_80183F64;
 #endif
 
-void* func_us_801B0C40(u8* pix, u8* str, s32 x, s32 y, s32 size) {
+void* func_us_801B0C40(u8* pix, const char* str, s32 x, s32 y, s32 size) {
     const u16 MINSCODE = 0x8140;
     const u16 RIGHT_DOUBLE_QUOTATION_MARK = 0x8168;
 
@@ -882,7 +883,7 @@ void* func_us_801B0C40(u8* pix, u8* str, s32 x, s32 y, s32 size) {
         pos = 0;
         while (*str >= 8) {
             s_8 = 0;
-#if VERSION_PSP
+#ifdef VERSION_PSP
             ch = g_api.func_ptr_91CF870((char*)str, &sp3f);
 #else
             ch = *str;
@@ -899,11 +900,12 @@ void* func_us_801B0C40(u8* pix, u8* str, s32 x, s32 y, s32 size) {
                 ch = MINSCODE;
                 s_8 = 2;
             } else {
-#if VERSION_PSP
+#ifdef VERSION_PSP
                 if (sp3f > 1) {
                     str += sp3f - 1;
                 }
             }
+            chPix = (u8*)g_api.func_ptr_91CF86C(ch, 1);
 #else
                 ch = *str++ | (ch << 8);
                 if (ch == MINSCODE) {
@@ -913,8 +915,8 @@ void* func_us_801B0C40(u8* pix, u8* str, s32 x, s32 y, s32 size) {
             if (ch == RIGHT_DOUBLE_QUOTATION_MARK) {
                 str += 2;
             }
-#endif
             chPix = (u8*)g_api.func_80106A28(ch, 1);
+#endif
             while (true) {
                 if (ch == MINSCODE) {
                     break;
@@ -1010,7 +1012,7 @@ loop:
 }
 
 Primitive* func_us_801B1064(
-    Primitive* prim, s16 x, s16 y, const u8* str, u16 clut) {
+    Primitive* prim, s16 x, s16 y, const char* str, u16 clut) {
     u8 buffer[64];
     u16 length;
     s32 i;
@@ -2414,11 +2416,12 @@ Primitive* func_us_801B3EC8(Primitive* prim, u32 number, u16 maxDigits) {
     return prim;
 }
 
-Primitive* func_us_801B3FB4(Primitive* prim, char* str, u16 length, s32 arg3) {
+Primitive* func_us_801B3FB4(
+    Primitive* prim, const char* str, u16 length, s32 arg3) {
     u8 ch;
     s32 i;
     u32 max;
-    char* chPtr;
+    const char* chPtr;
 
     chPtr = str;
     max = 0;
@@ -5045,7 +5048,7 @@ void func_us_801B8234(Entity* self) {
             enemyDef = &g_api.enemyDefs[enemyId];
             s3 = D_psp_092A5F48[self->params];
             func_us_801B0C40(pix, s3, 0, 0x1C0, 0x6E);
-            s3 = D_psp_092A5F48[self->params];
+            s3 = D_psp_092A5F40[self->params];
             func_us_801B0C40(pix, s3, 0, 0x1D0, 0x6E);
 #else
             s3 = D_us_80180FB4[self->params];
