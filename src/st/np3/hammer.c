@@ -425,7 +425,7 @@ void EntityGurkhaBodyParts(Entity* self) {
             angle = (Random() * 6) + 0x900;
             self->velocityX = (speed * rcos(angle)) / 2;
             self->velocityY = speed * rsin(angle);
-            self->ext.GH_Props.unk80 = (Random() & 0x1F) + 0x20;
+            self->ext.GH_Props.timer = (Random() & 0x1F) + 0x20;
             self->flags |= FLAG_DESTROY_IF_OUT_OF_CAMERA;
             self->hitboxState = 0;
             self->step_s++;
@@ -433,8 +433,8 @@ void EntityGurkhaBodyParts(Entity* self) {
         case 1:
             MoveEntity();
             self->velocityY += FIX(0.125);
-            self->rotate += self->ext.GH_Props.unkA6;
-            if (--self->ext.GH_Props.unk80 == 0) {
+            self->rotate += self->ext.GH_Props.rotVel;
+            if (--self->ext.GH_Props.timer == 0) {
                 self->step = 0;
                 self->pfnUpdate = EntityExplosion;
                 self->params = 0;

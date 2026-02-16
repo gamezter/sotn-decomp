@@ -3,12 +3,26 @@
 
 // clang-format off
 static u16 D_us_8018219C[] = {0, 9, 0, 4, 4, -4, -8, 0};
+// Struct reminder: Entity slot offset, parent entity's slot offset, length, params, zOffset
+// To view the body parts, make sure Hammer is loaded, then invoke:
+// python3 tools/display_animset_frames.py LIVE no2 0x8006 0x23E 48 48 --unk5A 0x4C
+
 static giantBroBodyPartsInit D_us_801821AC[] = {
-    {9, 0, 16, 7, 1},    {10, 9, 14, 8, 2},    {11, 10, 0, 9, 3},
-    {12, 0, 16, 13, -1}, {13, 12, 14, 14, -2}, {14, 13, 0, 15, -3},
-    {2, 0, -18, 2, 1},   {1, 2, -4, 16, 0},    {3, 2, 0, 4, 2},
-    {4, 3, 10, 5, 5},    {5, 4, 13, 6, 4},     {6, 2, 0, 10, -2},
-    {7, 6, 10, 11, -4},  {8, 7, 13, 12, -3},   {0, 0, 0, 0, 0}};
+    {9 , 0, 16, 7, 1},
+    {10, 9, 14, 8, 2},
+    {11, 10, 0, 9, 3},
+    {12, 0, 16, 13, -1},
+    {13, 12, 14, 14, -2},
+    {14, 13, 0, 15, -3},
+    {2, 0, -18, 2, 1}, // Frame 2, the chestpiece   
+    {1, 2, -4, 16, 0},
+    {3, 2, 0, 4, 2}, // Frame 4, shoulder
+    {4, 3, 10, 5, 5},
+    {5, 4, 13, 6, 4},
+    {6, 2, 0, 10, -2},
+    {7, 6, 10, 11, -4},
+    {8, 7, 13, 12, -3},
+    {0, 0, 0, 0, 0}};
 static s16 D_us_80182244[] = {2, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0};
 static s16 D_us_80182264[] = {9, 10, 12, 13, 11, 14, 2, 1, 4, 5, 7, 8, 15, 0};
 static s16 D_us_80182280[] = {12, 13, 9, 10, 14, 11, 2, 1, 4, 5, 7, 8, 15, 0};
@@ -219,6 +233,20 @@ static s32 func_801CE4CC(Entity* self) {
     }
 }
 
+typedef enum {
+    HAMMER_STEP_0,
+    HAMMER_STEP_1,
+    HAMMER_STEP_2,
+    HAMMER_STEP_3,
+    HAMMER_STEP_5 = 5,
+    HAMMER_STEP_6,
+    HAMMER_STEP_7,
+    HAMMER_STEP_8,
+    HAMMER_STEP_10 = 10,
+    HAMMER_STEP_12 = 12,
+    HAMMER_DYING = 24
+} HammerSteps;
+
 void EntityHammer(Entity* self) {
     Collider collider;
     Entity* otherEnt;
@@ -228,27 +256,29 @@ void EntityHammer(Entity* self) {
     s32 step;
 
     if ((self->step & 1) && (self->hitFlags & 3)) {
-        func_801CE1E8(12);
+        func_801CE1E8(HAMMER_STEP_12);
     }
-    if ((self->flags & FLAG_DEAD) && (self->step < 24)) {
+    if ((self->flags & FLAG_DEAD) && (self->step < HAMMER_DYING)) {
         PlaySfxPositional(SFX_HAMMER_DEATH);
-        func_801CE1E8(24);
+        func_801CE1E8(HAMMER_DYING);
     }
     switch (self->step) {
-    case 0:
+    case HAMMER_STEP_0:
         InitializeEntity(g_EInitHammer);
         self->animCurFrame = 3;
         self->hitboxWidth = 6;
         self->hitboxHeight = 6;
         /* fallthrough */
-    case 1:
+    case HAMMER_STEP_1:
         if (UnkCollisionFunc3(D_us_8018219C) & 1) {
             self->facingLeft = (GetSideToPlayer() & 1) ^ 1;
             self->step++;
         }
         break;
 
-    case 2:
+    case HAMMER_STEP_2:
+        // Loop through all parts until the eArrayOffset is zero
+        // (null-terminated)
         for (parts = D_us_801821AC, var_s3 = self; parts->eArrayOffset;
              parts++) {
             otherEnt = self + parts->eArrayOffset;
@@ -271,7 +301,7 @@ void EntityHammer(Entity* self) {
         otherEnt->params = 0x12;
         self->step++;
         /* fallthrough */
-    case 3:
+    case HAMMER_STEP_3:
         func_801CE228();
         otherEnt = self + 4;
         otherEnt->ext.GH_Props.rotate = 0x100;
@@ -281,7 +311,7 @@ void EntityHammer(Entity* self) {
         otherEnt->ext.GH_Props.rotate = 0x2C0;
         func_801CE1E8(5);
         /* fallthrough */
-    case 5:
+    case HAMMER_STEP_5:
         if (self->ext.GH_Props.unk84 == 1) {
             ptr = D_us_801822DC;
         } else {
@@ -307,7 +337,7 @@ void EntityHammer(Entity* self) {
         }
         break;
 
-    case 7:
+    case HAMMER_STEP_7:
         if (self->ext.GH_Props.unk84 == 1) {
             ptr = D_us_801822DC;
         } else {
@@ -335,7 +365,7 @@ void EntityHammer(Entity* self) {
         }
         break;
 
-    case 8:
+    case HAMMER_STEP_8:
         if (self->ext.GH_Props.unk84 == 1) {
             ptr = D_us_801822DC;
         } else {
@@ -398,7 +428,7 @@ void EntityHammer(Entity* self) {
         polarPlacePartsList(D_us_80182244);
         break;
 
-    case 6:
+    case HAMMER_STEP_6:
         switch (self->step_s) {
         case 0:
             self->step_s++;
@@ -481,7 +511,7 @@ void EntityHammer(Entity* self) {
         }
         break;
 
-    case 10:
+    case HAMMER_STEP_10:
         if (self->ext.GH_Props.unk84 == 1) {
             ptr = D_us_801822DC;
         } else {
@@ -497,7 +527,7 @@ void EntityHammer(Entity* self) {
         }
         break;
 
-    case 12:
+    case HAMMER_STEP_12:
         if (!self->step_s) {
             PlaySfxPositional(SFX_HAMMER_PAIN);
             self->step_s++;
@@ -516,7 +546,7 @@ void EntityHammer(Entity* self) {
         }
         break;
 
-    case 24:
+    case HAMMER_DYING:
         switch (self->step_s) {
         case 0:
             for (ptr = D_us_80182244; *ptr; ptr++) {
@@ -593,7 +623,7 @@ void EntityGurkhaBodyParts(Entity* self) {
             angle = (Random() * 6) + 0x900;
             self->velocityX = speed * rcos(angle) / 2;
             self->velocityY = speed * rsin(angle);
-            self->ext.GH_Props.unk80 = (Random() & 0x1F) + 0x20;
+            self->ext.GH_Props.timer = (Random() & 0x1F) + 0x20;
             self->flags |= FLAG_DESTROY_IF_OUT_OF_CAMERA;
             self->hitboxState = 0;
             self->step_s++;
@@ -602,8 +632,8 @@ void EntityGurkhaBodyParts(Entity* self) {
         case 1:
             MoveEntity();
             self->velocityY += FIX(0.125);
-            self->rotate += self->ext.GH_Props.unkA6;
-            if (!--self->ext.GH_Props.unk80) {
+            self->rotate += self->ext.GH_Props.rotVel;
+            if (!--self->ext.GH_Props.timer) {
                 self->step = 0;
                 self->pfnUpdate = EntityExplosion;
                 self->params = 0;
