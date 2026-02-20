@@ -1,25 +1,32 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include "no4.h"
 
-void func_us_801C8248(Entity* self) {
-    s32 posX;
-    s32 posY;
+#ifdef VERSION_PSP
+extern s32 E_ID(SPEAR_GUARD_BLOCK);
+#endif
 
-    if (g_api.TimeAttackController(
-            TIMEATTACK_EVENT_SUCCUBUS_DEFEAT, TIMEATTACK_GET_RECORD)) {
-        posX = self->posX.val;
-        posY = self->posY.val;
-        CreateEntityFromCurrentEntity(E_HEART_DROP, self);
-        self->params = 10;
-        self->posX.val = posX;
-        self->posY.val = posY;
-    }
-}
+static u8 D_us_80181804[] = {
+    63, 60, 56, 52, 48, 44, 40, 36, 32, 28, 24, 20, 16, 12, 8, 4,
+};
 
-extern u8 D_us_80181804[];
-extern Point16 D_us_80181814[];
-extern u8 D_us_8018185C[];
-extern u8 D_us_8018186C[];
+static Point16 D_us_80181814[] = {
+    {-8, -4}, {8, -6},  {-12, 4},  {-1, -7}, {6, 16},   {11, -3},
+    {10, 12}, {3, -2},  {-8, -8},  {10, -6}, {-12, 18}, {-8, -16},
+    {6, 4},   {10, 20}, {-11, 22}, {8, -2},
+};
+
+// unused
+static u8 D_us_80181854[] = {
+    11, 5, 1, 5, 12, 4, 0, 0,
+};
+
+static u8 D_us_8018185C[] = {
+    8, 62, 8, 63, 8, 64, 8, 63, 8, 64, 8, 63, 8, 64, -1, 0,
+};
+
+static u8 D_us_8018186C[] = {
+    15, 41, 3, 42, 3, 43, 3, 44, 22, 45, 2, 44, 2, 43, 2, 42, 6, 41, 0, 0,
+};
 
 void func_us_801C82B8(Entity* self) {
     Entity* newEnt;
@@ -36,10 +43,10 @@ void func_us_801C82B8(Entity* self) {
         (self->flags & FLAG_DEAD || g_CastleFlags[NO4_WATER_BLOCKED] > 2)) {
         DestroyEntity(newEnt);
         SetStep(5);
+        self->hitboxState = 0;
         self->ext.spearGuard.unk7C = 64;
         self->drawFlags = ENTITY_OPACITY;
-        self->hitboxState = 0;
-        self->opacity = 127;
+        self->opacity = 0x7F;
     }
 
     if (self->step && self->step < 4 && g_CastleFlags[NO4_WATER_BLOCKED] > 1) {
@@ -57,30 +64,27 @@ void func_us_801C82B8(Entity* self) {
         InitializeEntity(g_EInitSpearGuard);
         self->ext.spearGuard.unk80 = 176;
         self->ext.spearGuard.unk7C = 64;
-        self->hitboxOffY = 4;
         self->palette += 2;
-        CreateEntityFromCurrentEntity(E_SPEAR_GUARD_BLOCK, newEnt);
-        self->animCurFrame = 5;
+        self->hitboxOffY = 4;
+        CreateEntityFromCurrentEntity(E_ID(SPEAR_GUARD_BLOCK), newEnt);
         self->ext.spearGuard.unk7C = self->params * 8;
+        self->animCurFrame = 5;
         break;
 
     case 1:
         if (self->ext.spearGuard.unk7C) {
             self->ext.spearGuard.unk7C--;
-            return;
+        } else {
+            self->step++;
+            self->ext.spearGuard.unk7C = 1;
         }
-        self->ext.spearGuard.unk7C = 1;
-        self->step++;
         break;
 
     case 2:
         self->facingLeft = (GetSideToPlayer() & 1) ^ 1;
         if (!--self->ext.spearGuard.unk7C) {
             SetStep(3);
-            return;
         }
-
-    default:
         break;
 
     case 3:
@@ -90,21 +94,18 @@ void func_us_801C82B8(Entity* self) {
         if (!animStatus) {
             SetStep(2);
             self->ext.spearGuard.unk7C = 1;
-            break;
-        }
-        if (animStatus & 128 && self->animCurFrame == 45) {
+        } else if (animStatus & 0x80 && self->animCurFrame == 45) {
             PlaySfxPositional(SFX_WEAPON_SWISH_B);
-            break;
         }
         break;
 
     case 4:
         if (self->ext.spearGuard.unk7C) {
             self->ext.spearGuard.unk7C--;
-            break;
+        } else {
+            self->facingLeft ^= 1;
+            self->ext.spearGuard.unk7C = (rand() & 7) + 4;
         }
-        self->facingLeft ^= 1;
-        self->ext.spearGuard.unk7C = (rand() & 7) + 4;
         break;
 
     case 5:
@@ -122,21 +123,22 @@ void func_us_801C82B8(Entity* self) {
         }
 
         for (i = 0; i < 16; i++) {
-            if (self->ext.spearGuard.unk7C == D_us_80181804[i]) {
-                if (i == 14) {
-                    PlaySfxPositional(SFX_SPEAR_GUARD_DEATH);
-                } else if (!(i & 1)) {
-                    PlaySfxPositional(SFX_EXPLODE_FAST_B);
-                }
+            if (self->ext.spearGuard.unk7C != D_us_80181804[i]) {
+                continue;
+            }
+            if (i == 14) {
+                PlaySfxPositional(SFX_SPEAR_GUARD_DEATH);
+            } else if ((i & 1) == 0) {
+                PlaySfxPositional(SFX_EXPLODE_FAST_B);
+            }
 
-                newEnt = AllocEntity(&g_Entities[224], &g_Entities[256]);
-                if (newEnt != NULL) {
-                    CreateEntityFromCurrentEntity(E_EXPLOSION, newEnt);
-                    newEnt->params = 2;
-                    newEnt->zPriority = self->zPriority - 1;
-                    newEnt->posX.i.hi += D_us_80181814[i].x;
-                    newEnt->posY.i.hi += D_us_80181814[i].y;
-                }
+            newEnt = AllocEntity(&g_Entities[224], &g_Entities[256]);
+            if (newEnt != NULL) {
+                CreateEntityFromCurrentEntity(E_EXPLOSION, newEnt);
+                newEnt->params = 2;
+                newEnt->zPriority = self->zPriority - 1;
+                newEnt->posX.i.hi += D_us_80181814[i].x;
+                newEnt->posY.i.hi += D_us_80181814[i].y;
             }
         }
         break;

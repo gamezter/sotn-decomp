@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-#include "../no4/no4.h"
+#include "no4.h"
 
 #include "../pfn_entity_update.h"
 
@@ -63,7 +63,7 @@ static s32 E_ID(ID_37);
 static s32 E_ID(ID_38);
 static s32 E_ID(ID_39);
 static s32 E_ID(ID_3A);
-s32 E_ID(ID_3B);
+s32 E_ID(SPEAR_GUARD_BLOCK);
 static s32 E_ID(ID_3C);
 static s32 E_ID(ID_3D);
 static s32 E_ID(ID_3E);
@@ -90,9 +90,9 @@ s32 E_ID(BREAKABLE_WALL_DEBRIS);
 static s32 E_ID(ID_53);
 s32 E_ID(ID_54);
 static s32 E_ID(ID_55);
-s32 E_ID(ID_56);
+s32 E_ID(SKELETON_APE);
 static s32 E_ID(ID_57);
-s32 E_ID(ID_58);
+s32 E_ID(SKELETON_APE_BARREL);
 static s32 E_ID(ID_59);
 s32 E_ID(KILLER_FISH_DEATH_PUFF);
 static s32 E_ID(ID_5B);
@@ -152,7 +152,7 @@ void InitEntityIds(void) {
     E_ID(ID_38) = 0x38;
     E_ID(ID_39) = 0x39;
     E_ID(ID_3A) = 0x3A;
-    E_ID(ID_3B) = 0x3B;
+    E_ID(SPEAR_GUARD_BLOCK) = 0x3B;
     E_ID(ID_3C) = 0x3C;
     E_ID(ID_3D) = 0x3D;
     E_ID(ID_3E) = 0x3E;
@@ -179,9 +179,9 @@ void InitEntityIds(void) {
     E_ID(ID_53) = 0x53;
     E_ID(ID_54) = 0x54;
     E_ID(ID_55) = 0x55;
-    E_ID(ID_56) = 0x56;
+    E_ID(SKELETON_APE) = 0x56;
     E_ID(ID_57) = 0x57;
-    E_ID(ID_58) = 0x58;
+    E_ID(SKELETON_APE_BARREL) = 0x58;
     E_ID(ID_59) = 0x59;
     E_ID(KILLER_FISH_DEATH_PUFF) = 0x5A;
     E_ID(ID_5B) = 0x5B;

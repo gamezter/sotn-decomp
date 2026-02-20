@@ -135,8 +135,6 @@ extern EInit g_EInitSkeletonApeBarrel;
 extern EInit g_EInitSkeletonApePunch;
 extern EInit g_EInitKillerFish;
 
-extern s32 D_us_80181108;
-extern s16 D_us_8018159C[];
 extern s16 D_us_801DF788;
 extern s16 D_us_801DF78A;
 extern s8 D_us_801DF78E;
